@@ -2,3 +2,5 @@
 venv/
 .DS_Store
 config.txt
+temp/
+files/
