@@ -65,6 +65,20 @@ def name(business_name):
     return jsonify({"data": result})
 
 
+@app.route('/get/open_businesses', methods=['GET'])
+def open_businesses():
+    # cursor = patterns.aggregate([{"$match":{}},
+    #                              {"$group": {"_id": "$date",
+    #                                          "open": {"$sum": {"$cond": [{"$gte":["$visits", 1]}, 1, 0]}},
+    #                                          "total": {"$sum": 1}}},
+    #                              {"$sort": {"_id": 1}}])
+    #
+    # result = []
+    # for obj in cursor:
+    #     result.append([obj["_id"]*1000, obj["open"]/obj["total"]])
+    # cache.insert_one({"type": "open_businesses", "data": result})
+    obj = cache.find_one({"type": "open_businesses"})
+    return jsonify({"data": obj["data"]})
 
 if __name__ == '__main__':
     app.run(debug=True)
