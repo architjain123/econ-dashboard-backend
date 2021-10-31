@@ -3,6 +3,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 from configparser import ConfigParser
+from datetime import datetime, timezone
 
 config = ConfigParser()
 config.read("config.txt")
@@ -21,15 +22,17 @@ cache = db['cache']
 
 @app.route('/get/overall', methods=['GET'])
 def overall():
-    # cursor = patterns.aggregate([{"$group": {"_id": "$date", "total": {"$sum": "$visits"}}},\
-    #                              {"$sort": {"_id": 1}}])
+    # janAverage = 0.049820101400157545
+    # cursor = patterns.aggregate([{"$group": {
+    #     "_id": "$date",
+    #     "total": {"$sum": {"$divide": ["$visits", "$total_devices_seen"]}}}},
+    #     {"$sort": {"_id": 1}}])
     # result = []
     # for obj in cursor:
-    #     result.append([obj["_id"]*1000, obj["total"]])
-    # cache.insert_one({"type": "overall", "data": result})
-
-    obj = cache.find_one({"type": "overall"})
-    return jsonify({"data": obj["data"]})
+    #     result.append([obj["_id"]*1000, obj["total"]/janAverage])
+    # cache.insert_one({"type": "overall_foot", "data": result})
+    result = cache.find_one({"type": "overall_foot"})["data"]
+    return jsonify({"data": result})
 
 
 @app.route('/get/naics/<naics_code>', methods=['GET'])
@@ -67,6 +70,7 @@ def name(business_name):
 
 @app.route('/get/open_businesses', methods=['GET'])
 def open_businesses():
+    # jan20_avgs = [0.7220641489912054, 0.7354500775995862, 0.7075530263838592, 0.7343162614243834, 0.7442317640972581, 0.6770994999137783, 0.6347215037075358]
     # cursor = patterns.aggregate([{"$match":{}},
     #                              {"$group": {"_id": "$date",
     #                                          "open": {"$sum": {"$cond": [{"$gte":["$visits", 1]}, 1, 0]}},
@@ -75,10 +79,12 @@ def open_businesses():
     #
     # result = []
     # for obj in cursor:
-    #     result.append([obj["_id"]*1000, obj["open"]/obj["total"]])
+    #     weekday = datetime.fromtimestamp(obj["_id"], tz=timezone.utc).weekday()
+    #     result.append([obj["_id"]*1000, (obj["open"]/obj["total"])/jan20_avgs[weekday]])
     # cache.insert_one({"type": "open_businesses", "data": result})
-    obj = cache.find_one({"type": "open_businesses"})
-    return jsonify({"data": obj["data"]})
+    result = cache.find_one({"type": "open_businesses"})["data"]
+    return jsonify({"data": result})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
