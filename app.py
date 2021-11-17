@@ -86,5 +86,40 @@ def open_businesses():
     return jsonify({"data": result})
 
 
+@app.route('/get/retail_open_businesses', methods=['GET'])
+def retail_open_businesses():
+    # jan20_avgs = [0.80396865520728, 0.8121840242669363, 0.7784630940343782, 0.8120323559150657, 0.8253791708796765, 0.7642821031344793, 0.7024772497472194]
+    # cursor = patterns.aggregate([{"$match": {"naics_code": {"$regex": '^44'}}},
+    #                              {"$group": {"_id": "$date",
+    #                                          "open": {"$sum": {"$cond": [{"$gte":["$visits", 1]}, 1, 0]}},
+    #                                          "total": {"$sum": 1}}},
+    #                              {"$sort": {"_id": 1}}])
+    #
+    # result = []
+    # for obj in cursor:
+    #     weekday = datetime.fromtimestamp(obj["_id"], tz=timezone.utc).weekday()
+    #     result.append([obj["_id"]*1000, (obj["open"]/obj["total"])/jan20_avgs[weekday]])
+    # cache.insert_one({"type": "retail_open_businesses", "data": result})
+    result = cache.find_one({"type": "retail_open_businesses"})["data"]
+    return jsonify({"data": result})
+
+
+@app.route('/get/lnh_open_businesses', methods=['GET'])
+def lnh_open_businesses():
+    # jan20_avgs = [0.8950829940494832, 0.8995458816160351, 0.8846226119636705, 0.9036642655809584, 0.9207015346069529, 0.9044002505480739, 0.8753523332289382]
+    # cursor = patterns.aggregate([{"$match": {"naics_code": {"$regex": '^7'}}},
+    #                              {"$group": {"_id": "$date",
+    #                                          "open": {"$sum": {"$cond": [{"$gte":["$visits", 1]}, 1, 0]}},
+    #                                          "total": {"$sum": 1}}},
+    #                              {"$sort": {"_id": 1}}])
+    # result = []
+    # for obj in cursor:
+    #     weekday = datetime.fromtimestamp(obj["_id"], tz=timezone.utc).weekday()
+    #     result.append([obj["_id"]*1000, (obj["open"]/obj["total"])/jan20_avgs[weekday]])
+    # cache.insert_one({"type": "lnh_open_businesses", "data": result})
+    result = cache.find_one({"type": "lnh_open_businesses"})["data"]
+    return jsonify({"data": result})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
