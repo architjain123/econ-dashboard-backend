@@ -56,13 +56,17 @@ address, username, password = config.get_db("address"), config.get_db("username"
 
 client = MongoClient('mongodb://{}:{}@{}'.format(username, password, address), 27017)
 patterns = client["main"]['patterns']
+cache = client["main"]['cache']
 
 files_to_parse = FileManager.get_files_to_parse()
 if not files_to_parse:
     print("No files to parse")
     quit()
 else:
+    print("Dropping existing cache")
+    cache.drop()
     print("Parsing files : ", files_to_parse)
+
 
 for filename in files_to_parse:
     year, month = FileManager.parse_year_month(filename)
