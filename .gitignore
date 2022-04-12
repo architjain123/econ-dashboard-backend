@@ -1,6 +1,6 @@
 .idea/
 venv/
 .DS_Store
-config.txt
+config.ini
 temp/
 files/

@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import utils
 
 config = ConfigParser()
-config.read("config.txt")
+config.read("config.ini")
 address = config.get("DB", "address")
 username = config.get("DB", "username")
 password = config.get("DB", "password")
